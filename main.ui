@@ -401,6 +401,7 @@ color: rgb(255, 255, 255)</string>
     <addaction name="resu"/>
     <addaction name="ingreList"/>
     <addaction name="delet"/>
+    <addaction name="change"/>
    </widget>
    <addaction name="menuFunciones"/>
   </widget>
@@ -445,6 +446,14 @@ color: rgb(255, 255, 255)</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="change">
+   <property name="text">
+    <string>Cambiar</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>

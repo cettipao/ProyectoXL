@@ -326,14 +326,14 @@ class MyAppMain(QtGui.QMainWindow, Ui_MainWindowMain):
     def orden(self, lista):
         apellidos = []
         for invitado in lista:
-            apellidos.append(invitado.apellido)
+            apellidos.append(invitado.apellido + invitado.id)
         
         apellidos.sort()
 
         invitados = []
         for invitado in range(len(apellidos)):
             for inv in lista:
-                if(inv.apellido == apellidos[invitado]):
+                if((inv.apellido+inv.id) == apellidos[invitado]):
                     invitados.append(inv)
 
         return invitados
@@ -347,6 +347,7 @@ class MyAppMain(QtGui.QMainWindow, Ui_MainWindowMain):
         
         for invitado in self.orden(self.fileManager.gestorInvitados.esperados):
             entries.append(invitado.apellido + " " + invitado.nombre)
+            print len(entries)
 
         model = QtGui.QStandardItemModel()
         self.listView.setModel(model)
@@ -354,7 +355,7 @@ class MyAppMain(QtGui.QMainWindow, Ui_MainWindowMain):
         for i in entries:
             item = QtGui.QStandardItem(i)
             model.appendRow(item)
-
+        
         entries = []
         for invitado in self.orden(self.fileManager.gestorInvitados.adentro):
             
@@ -366,7 +367,7 @@ class MyAppMain(QtGui.QMainWindow, Ui_MainWindowMain):
         for i in entries:
             item = QtGui.QStandardItem(i)
             model.appendRow(item)
-
+        
 
     def escanear(self):
         lector = LectorQr()
@@ -422,8 +423,8 @@ class MyApp(QtGui.QMainWindow, Ui_MainWindow):
             return
 
         if(self.fileManager.gestorInvitados.getInvitadoEsperadoById(str(dni))!= False):
-            print"Invitado ya agregado"
-            return
+            print"Invitado ya agregado, eliminando el anterior y creando uno nuevo"
+            self.fileManager.gestorInvitados.esperados.remove(self.fileManager.gestorInvitados.getInvitadoEsperadoById(str(dni)))
 
         print(dni)
         print(str(dni))
