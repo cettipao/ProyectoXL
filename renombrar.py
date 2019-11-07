@@ -55,14 +55,6 @@ class GestorInvitados:
                 return True
         return False
 
-    def getInvitadoAdentro(self,id_):
-        if not self.adentro:
-            return
-        for invitado in self.adentro:
-            if(id_ == invitado.id):
-                return invitado
-        return False
-
 
     def addInvitadoEsperado(self,nombre,apellido,sexo,dni):
         invitado = Invitado(nombre,apellido,sexo,dni)
@@ -170,7 +162,7 @@ class LectorQr:
 
         # Inicializar la camara
         
-        capture = cv2.VideoCapture(1)
+        capture = cv2.VideoCapture(0)
         # Cargar la fuente
         font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -225,6 +217,8 @@ class MyAppMain(QtGui.QMainWindow, Ui_MainWindowMain):
         self.ingreList.triggered.connect(self.ingreLista)
         self.delet.triggered.connect(self.removeInvitado)
         self.actualizarTablas()
+
+
 
     def warning(self, title, message):
         msgBox = QtGui.QMessageBox()
@@ -330,6 +324,8 @@ class MyAppMain(QtGui.QMainWindow, Ui_MainWindowMain):
         print("Abriendo")
         window2.show()
         window2.setFileManager(self.fileManager,self)
+        for i in self.fileManager.gestorInvitados.esperados:
+            window2.addGuest(i.nombre,i.apellido,i.id)
 
     def orden(self, lista):
         apellidos = []
@@ -355,7 +351,7 @@ class MyAppMain(QtGui.QMainWindow, Ui_MainWindowMain):
         
         for invitado in self.orden(self.fileManager.gestorInvitados.esperados):
             entries.append(invitado.apellido + " " + invitado.nombre)
-            #print len(entries)
+            print len(entries)
 
         model = QtGui.QStandardItemModel()
         self.listView.setModel(model)
@@ -382,8 +378,7 @@ class MyAppMain(QtGui.QMainWindow, Ui_MainWindowMain):
         id = lector.escaneo()
         print(id)
         if self.fileManager.gestorInvitados.idInvitadoAdentro(id):
-            inv = self.fileManager.gestorInvitados.getInvitadoAdentro(id)
-            self.warning('Aviso', '{} {}, DNI: {} ya esta adentro'.format(inv.nombre,inv.apellido,id))
+            self.warning('Aviso', '{} ya esta adentro'.format(id))
         elif self.fileManager.gestorInvitados.isInvitadoEsperado(id) != False:
             invitado = self.fileManager.gestorInvitados.getInvitadoEsperadoById(id)
             
@@ -408,16 +403,6 @@ class MyAppMain(QtGui.QMainWindow, Ui_MainWindowMain):
 
             self.actualizarTablas()
         else:
-            if id == "00000000":
-                self.lblName.setText("Test")
-                self.lblSur.setText("Test")
-                self.lblId.setText("Test")
-                self.lblSex.setText("Test")
-                tiempo_entrada = time.localtime()
-                self.lblTim.setText(str(time.asctime(tiempo_entrada)))
-
-                return
-
             self.warning("Aviso","{} no existe".format(id))
 
 
@@ -431,20 +416,21 @@ class MyApp(QtGui.QMainWindow, Ui_MainWindow):
         self.fileManager = fileManager
         self.myAppMain = myAppMain
 
-    def addGuest(self):
+    def addGuest(self,name,surname,dni):
+        """
         name = self.txtName.text()
         surname = self.txtSurname.text()
         sexo = self.comboBox.currentText()
         dni = self.txtDni.text()
-
+        """
         if (len(dni)!=8):
             print "DNI no valido"
             return
-
+        """
         if(self.fileManager.gestorInvitados.getInvitadoEsperadoById(str(dni))!= False):
             print"Invitado ya agregado, eliminando el anterior y creando uno nuevo"
             self.fileManager.gestorInvitados.esperados.remove(self.fileManager.gestorInvitados.getInvitadoEsperadoById(str(dni)))
-
+        """
         print(dni)
         print(str(dni))
 
@@ -495,12 +481,12 @@ class MyApp(QtGui.QMainWindow, Ui_MainWindow):
         self.txtDni.setText("")
 
         #Crea invitado
-        
+        """
         self.fileManager.gestorInvitados.addInvitadoEsperado(str(name),str(surname),str(sexo),str(dni))
         self.fileManager.guardar()
         self.fileManager.cargar()
         self.myAppMain.actualizarTablas()
-
+"""
 
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
